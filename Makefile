@@ -9,7 +9,6 @@ else
 endif
 
 install:
-	go env -w GOPRIVATE=github.com/erodriguezg
 	go mod download
 
 updatedeps:
@@ -64,22 +63,20 @@ docker-build:
 	docker build \
 	-f build/docker/dev/Dockerfile \
 	--build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) \
-	-t aqmarket/${IMAGE_NAME}:local .
+	-t erodriguezg/${IMAGE_NAME}:local .
 
-docker-run:
+docker-run: docker-build
 	docker run --rm -it -p 3000:3000 \
-	-v ${CURRENT_DIR}/pkg:/go/src/bitbucket.org/aqmarketdev/${IMAGE_NAME}/pkg \
 	--env-file ./.env \
-	aqmarket/${IMAGE_NAME}:local
+	erodriguezg/${IMAGE_NAME}:local
 
 docker-drone-build: install compile
 	docker build \
 	-f build/docker/drone/Dockerfile \
 	--build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) \
-	-t aqmarket/${IMAGE_NAME}:local-drone .
+	-t erodriguezg/${IMAGE_NAME}:local-drone .
 
-docker-drone-run:
+docker-drone-run: docker-drone-build
 	docker run --rm -it -p 3000:3000 \
-	-v ${CURRENT_DIR}/pkg:/go/src/bitbucket.org/aqmarketdev/${IMAGE_NAME}/pkg \
 	--env-file ./.env \
-	aqmarket/${IMAGE_NAME}:local-drone
+	erodriguezg/${IMAGE_NAME}:local-drone
