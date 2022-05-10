@@ -70,6 +70,17 @@ docker-run: docker-build
 	--env-file ./.env \
 	erodriguezg/${IMAGE_NAME}:local
 
+docker-notoptimized-build:
+	docker build \
+	-f build/docker/dev/Dockerfile-not-optimized \
+	--build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) \
+	-t erodriguezg/${IMAGE_NAME}:local-notoptimized .
+
+docker-notoptimized-run: docker-notoptimized-build
+	docker run --rm -it -p 3000:3000 \
+	--env-file ./.env \
+	erodriguezg/${IMAGE_NAME}:local-notoptimized
+
 docker-drone-build: install compile
 	docker build \
 	-f build/docker/drone/Dockerfile \

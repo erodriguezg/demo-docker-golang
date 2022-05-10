@@ -1,0 +1,19 @@
+FROM golang:1.16
+
+RUN apt-get update && apt-get install -y --no-install-recommends tzdata
+
+ENV GO111MODULE=on
+ENV CGO_ENABLED=0
+ENV GOOS=linux
+ENV GOARCH=amd64
+ARG SSH_PRIVATE_KEY
+
+WORKDIR /app
+
+COPY . .
+
+RUN go mod download && go build ./cmd/main.go
+
+CMD ["./main"]
+
+EXPOSE 3000
